@@ -1,79 +1,82 @@
 // Observer class
-class Observer {
-    constructor(name) {
-       this.name = name;
+class PhoneNumberObserver {
+  constructor() {}
+
+  // Method to be called by the Telephone class to notify it
+  update(number) {
+    console.log(`Phone number dialed: ${number}`);
+  }
+}
+
+class SpecificMessageObserver {
+  constructor() {}
+
+  // Method to be called by the Telephone class to notify it
+  update(number) {
+    console.log("Now Dialling 2347023232");
+  }
+}
+
+// Telephone class
+class Telephone {
+  constructor() {
+    this.phoneNumbers = new Set();
+    this.observers = [];
+  }
+
+  // Method to add a phone number
+  addPhoneNumber(number) {
+    this.phoneNumbers.add(number);
+  }
+
+  // Method to remove a phone number
+  removePhoneNumber(number) {
+    this.phoneNumbers.delete(number);
+  }
+
+  // Method to dial a phone number
+  dialPhoneNumber(number) {
+    if (this.phoneNumbers.has(number)) {
+      console.log(`Dialing ${number}...`);
+      this.notifyObservers(number); // Notify observers
+    } else {
+      console.log(`Phone number ${number} not found.`);
     }
-   
-    // Method to be called by the Telephone class to notify it
-    update(number) {
-       console.log(`${this.name} notified: ${number} dialed.`);
+  }
+
+  // Method to add an observer
+  addObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  // Method to remove an observer
+  removeObserver(observer) {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
     }
-   }
-   
-   // Telephone class
-   class Telephone {
-    constructor() {
-       this.phoneNumbers = new Set();
-       this.observers = [];
-    }
-   
-    // Method to add a phone number
-    addPhoneNumber(number) {
-       this.phoneNumbers.add(number);
-    }
-   
-    // Method to remove a phone number
-    removePhoneNumber(number) {
-       this.phoneNumbers.delete(number);
-    }
-   
-    // Method to dial a phone number
-    dialPhoneNumber(number) {
-       if (this.phoneNumbers.has(number)) {
-         console.log(`Dialing ${number}...`);
-         this.notifyObservers(number); // Notify observers
-       } else {
-         console.log(`Phone number ${number} not found.`);
-       }
-    }
-   
-    // Method to add an observer
-    addObserver(observer) {
-       this.observers.push(observer);
-    }
-   
-    // Method to notify all observers
-    notifyObservers(number) {
-       this.observers.forEach(observer => observer.update(number));
-    }
-   }
-   
-   // Example usage
-   const myTelephone = new Telephone();
-   
-   // Adding phone numbers
-   myTelephone.addPhoneNumber('123-456-7890');
-   myTelephone.addPhoneNumber('098-765-4321');
-   
-   // Creating observers
-   const printNumberObserver = new Observer('Print Number Observer');
-   const specificMessageObserver = new Observer('Specific Message Observer');
-   
-   // Overriding the update method for the specific message observer
-   specificMessageObserver.update = function(number) {
-    console.log('Now Dialling 2347023232');
-   };
-   
-   // Adding observers to the telephone class
-   myTelephone.addObserver(printNumberObserver);
-   myTelephone.addObserver(specificMessageObserver);
-   
-   // Dialing a phone number
-   myTelephone.dialPhoneNumber('123-456-7890'); // This will notify the observers
-   
-   // Removing a phone number
-   myTelephone.removePhoneNumber('098-765-4321');
-   
-   // Attempting to dial a removed number
-   myTelephone.dialPhoneNumber('098-765-4321'); // This will not notify the observers
-   
+  }
+
+  // Method to notify all observers
+  notifyObservers(number) {
+    this.observers.forEach((observer) => observer.update(number));
+  }
+}
+
+// Creating observers
+const printNumberObserver = new PhoneNumberObserver();
+const specificMessageObserver = new SpecificMessageObserver();
+
+// Example
+const myTelephone = new Telephone();
+
+// Adding observers to the telephone class
+myTelephone.addObserver(printNumberObserver);
+myTelephone.addObserver(specificMessageObserver);
+
+myTelephone.addPhoneNumber("09061566384");
+myTelephone.dialPhoneNumber("09061566384");
+
+// Removing an observer
+myTelephone.removeObserver(printNumberObserver);
+myTelephone.dialPhoneNumber("09061566384");
